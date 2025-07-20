@@ -1,3 +1,57 @@
-.App-Container{
+.App-Container {
     background-color: #eeeeee;
+    min-height: 100vh;
+    padding: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* For form elements */
+input, select {
+    padding: 8px 12px;
+    margin: 4px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 300px;
+}
+
+button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #4f46e5; /* indigo-600 */
+    color: white;
+    cursor: pointer;
+    margin: 4px;
+}
+
+button:hover {
+    background-color: #4338ca; /* indigo-700 */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #f3f4f6; /* light gray */
+}
+
+hr {
+    margin: 1.5rem 0;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
 }

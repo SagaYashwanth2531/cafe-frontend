@@ -1,34 +1,38 @@
 import "./Register.css";
 // import { useRef } from "react";
 import { useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+
 export default function Register() {
   const [user, setUser] = useState({});
   const [error, setError] = useState();
-  const Navigate = useNavigate()
-  const API_URL = import.meta.env.VITE_API_URL
+  const Navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const handleSubmit = async () => {
     try {
       const url = `${API_URL}/api/users/register`;
       const result = await axios.post(url, user);
       setError("Data saved successfully");
-      Navigate("/login")
+      Navigate("/login");
     } catch (err) {
       console.log(err);
       setError("Something went wrong");
     }
   };
+
   return (
-    <div className="App-Register-Row">
-      <div style={{ backgroundColor: "white" }}>
-        <h2>Registration Form</h2>
-        {error}
+    <div className="App-Register-Row min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-4 text-center text-indigo-700">Registration Form</h2>
+        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
         <p>
           <input
             type="text"
             onChange={(e) => setUser({ ...user, firstName: e.target.value })}
             placeholder="Enter First Name"
+            className="w-full p-2 mb-3 border border-gray-300 rounded"
           />
         </p>
         <p>
@@ -36,6 +40,7 @@ export default function Register() {
             type="text"
             placeholder="Enter Last Name"
             onChange={(e) => setUser({ ...user, lastName: e.target.value })}
+            className="w-full p-2 mb-3 border border-gray-300 rounded"
           />
         </p>
         <p>
@@ -43,6 +48,7 @@ export default function Register() {
             type="text"
             placeholder="Enter Email Address"
             onChange={(e) => setUser({ ...user, email: e.target.value })}
+            className="w-full p-2 mb-3 border border-gray-300 rounded"
           />
         </p>
         <p>
@@ -50,13 +56,21 @@ export default function Register() {
             type="password"
             placeholder="Enter Password"
             onChange={(e) => setUser({ ...user, password: e.target.value })}
+            className="w-full p-2 mb-4 border border-gray-300 rounded"
           />
         </p>
         <p>
-          <button onClick={handleSubmit}>Submit</button>
+          <button
+            onClick={handleSubmit}
+            className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
+          >
+            Submit
+          </button>
         </p>
-        <hr />
-      <Link to="/login">Already a member? Login Here...</Link>
+        <hr className="my-4" />
+        <Link to="/login" className="block text-center text-indigo-600 hover:underline">
+          Already a member? Login Here...
+        </Link>
       </div>
     </div>
   );

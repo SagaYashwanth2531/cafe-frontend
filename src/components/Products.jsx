@@ -1,7 +1,6 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import { useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState();
@@ -18,6 +17,7 @@ export default function Products() {
   const [limit, setLimit] = useState(2);
   const [editId, setEditId] = useState();
   const API_URL = import.meta.env.VITE_API_URL;
+
   const fetchProducts = async () => {
     try {
       setError("Loading...");
@@ -31,15 +31,17 @@ export default function Products() {
       setError("Something went wrong");
     }
   };
+
   useEffect(() => {
     fetchProducts();
   }, [page]);
+
   const handleDelete = async (id) => {
     try {
       const url = `${API_URL}/api/products/${id}`;
-      const result = await axios.delete(url);
-      setError("User Deleted Successfully");
-      fetchUsers();
+      await axios.delete(url);
+      setError("Product Deleted Successfully");
+      fetchProducts();
     } catch (err) {
       console.log(err);
       setError("Something went wrong");
@@ -59,8 +61,8 @@ export default function Products() {
     }
     try {
       const url = `${API_URL}/api/products`;
-      const result = await axios.post(url, form);
-      setError("User added succesfully");
+      await axios.post(url, form);
+      setError("Product added successfully");
       fetchProducts();
       resetForm();
     } catch (err) {
@@ -89,11 +91,11 @@ export default function Products() {
     }
     try {
       const url = `${API_URL}/api/products/${editId}`;
-      const result = await axios.patch(url, form);
+      await axios.patch(url, form);
       fetchProducts();
       setEditId();
       resetForm();
-      setError("User information updated successfully");
+      setError("Product updated successfully");
     } catch (err) {
       console.log(err);
       setError("Something went wrong");
@@ -107,104 +109,154 @@ export default function Products() {
 
   const resetForm = () => {
     setForm({
-      ...form,
       productName: "",
       description: "",
       price: "",
       imgUrl: "",
     });
   };
+
   return (
-    <div>
-      <h2>Product Management</h2>
-      {error}
-      <div>
-        <form ref={frmRef}>
-          <input
-            name="productName"
-            value={form.productName}
-            type="text"
-            placeholder="Product Name"
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="description"
-            value={form.description}
-            type="text"
-            placeholder="Description"
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="price"
-            value={form.price}
-            type="text"
-            placeholder="Price"
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="imgUrl"
-            value={form.imgUrl}
-            type="text"
-            placeholder="Image Url"
-            onChange={handleChange}
-            required
-          />
+    <div className="min-h-screen p-6 bg-gray-100">
+      <h2 className="text-2xl font-bold mb-4 text-indigo-700">Product Management</h2>
 
+      {error && <div className="text-red-500 mb-4">{error}</div>}
 
+      {/* Product Form */}
+      <form ref={frmRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <input
+          name="productName"
+          value={form.productName}
+          type="text"
+          placeholder="Product Name"
+          onChange={handleChange}
+          required
+          className="p-2 border border-gray-300 rounded"
+        />
+        <input
+          name="description"
+          value={form.description}
+          type="text"
+          placeholder="Description"
+          onChange={handleChange}
+          required
+          className="p-2 border border-gray-300 rounded"
+        />
+        <input
+          name="price"
+          value={form.price}
+          type="text"
+          placeholder="Price"
+          onChange={handleChange}
+          required
+          className="p-2 border border-gray-300 rounded"
+        />
+        <input
+          name="imgUrl"
+          value={form.imgUrl}
+          type="text"
+          placeholder="Image URL"
+          onChange={handleChange}
+          required
+          className="p-2 border border-gray-300 rounded"
+        />
+
+        <div className="col-span-1 md:col-span-2 lg:col-span-4 flex gap-4">
           {editId ? (
             <>
-              <button onClick={handleUpdate}>Update</button>
-              <button onClick={handleCancel}>Cancel</button>
+              <button
+                onClick={handleUpdate}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              >
+                Update
+              </button>
+              <button
+                onClick={handleCancel}
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              >
+                Cancel
+              </button>
             </>
           ) : (
-            <button onClick={handleAdd}>Add</button>
+            <button
+              onClick={handleAdd}
+              className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+            >
+              Add
+            </button>
           )}
-        </form>
+        </div>
+      </form>
+
+      {/* Search */}
+      <div className="mb-4 flex items-center gap-2">
+        <input
+          type="text"
+          onChange={(e) => setSearchVal(e.target.value)}
+          placeholder="Search product name..."
+          className="p-2 border border-gray-300 rounded w-full max-w-xs"
+        />
+        <button
+          onClick={fetchProducts}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Search
+        </button>
       </div>
-      <div>
-        <input type="text" onChange={(e) => setSearchVal(e.target.value)} />
-        <button onClick={fetchProducts}>Search</button>
-      </div>
-      <div>
-        <table border="1">
-          <thead>
+
+      {/* Products Table */}
+      <div className="overflow-x-auto mb-6">
+        <table className="min-w-full text-sm border border-gray-300">
+          <thead className="bg-gray-200">
             <tr>
-              <th>Product Name</th>
-              <th>Description</th>
-              <th>Price</th>
-              <th>Image Url</th>
-              <th>Action</th>
+              <th className="p-2 border">Product Name</th>
+              <th className="p-2 border">Description</th>
+              <th className="p-2 border">Price</th>
+              <th className="p-2 border">Image URL</th>
+              <th className="p-2 border">Action</th>
             </tr>
           </thead>
-          {products.map((value) => (
-            <tbody key={value._id}>
-              <tr>
-                <td>{value.productName}</td>
-                <td>{value.description}</td>
-                <td>{value.price}</td>
-                <td>{value.imgUrl}</td>
-                <td>
-                  <button onClick={() => handleEdit(value)}>Edit</button>
-                  <button onClick={() => handleDelete(value._id)}>
+          <tbody>
+            {products.map((value) => (
+              <tr key={value._id} className="hover:bg-gray-50">
+                <td className="border p-2">{value.productName}</td>
+                <td className="border p-2">{value.description}</td>
+                <td className="border p-2">₹{value.price}</td>
+                <td className="border p-2 break-all">{value.imgUrl}</td>
+                <td className="border p-2 space-x-2">
+                  <button
+                    onClick={() => handleEdit(value)}
+                    className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(value._id)}
+                    className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                  >
                     Delete
                   </button>
                 </td>
               </tr>
-            </tbody>
-          ))}
+            ))}
+          </tbody>
         </table>
       </div>
-      <div>
-        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
+
+      {/* Pagination */}
+      <div className="flex justify-center gap-4">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
+        >
           Previous
         </button>
-        Page {page} of {totalPages}
+        <span className="text-sm font-medium">Page {page} of {totalPages}</span>
         <button
           disabled={page === totalPages}
           onClick={() => setPage(page + 1)}
+          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
         >
           Next
         </button>

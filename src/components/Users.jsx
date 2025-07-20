@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { useContext } from "react";
 import { AppContext } from "../App";
 import axios from "axios";
+
 export default function Users() {
   const [users, setUsers] = useState([]);
   const { user } = useContext(AppContext);
@@ -22,6 +23,7 @@ export default function Users() {
   const [limit, setLimit] = useState(2);
   const [editId, setEditId] = useState();
   const API_URL = import.meta.env.VITE_API_URL;
+
   const fetchUsers = async () => {
     try {
       setError("Loading...");
@@ -39,9 +41,11 @@ export default function Users() {
       setError("Something went wrong");
     }
   };
+
   useEffect(() => {
     fetchUsers();
   }, [page]);
+
   const handleDelete = async (id) => {
     try {
       const url = `${API_URL}/api/users/${id}`;
@@ -136,12 +140,13 @@ export default function Users() {
       role: "",
     });
   };
+
   return (
-    <div>
-      <h2>User Management</h2>
-      {error}
-      <div>
-        <form ref={frmRef}>
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4 text-indigo-700">User Management</h2>
+      {error && <p className="mb-2 text-red-500">{error}</p>}
+      <div className="mb-4">
+        <form ref={frmRef} className="space-y-2 flex flex-col sm:flex-row sm:flex-wrap gap-3">
           <input
             name="firstName"
             value={form.firstName}
@@ -149,6 +154,7 @@ export default function Users() {
             placeholder="First Name"
             onChange={handleChange}
             required
+            className="p-2 border rounded w-full sm:w-40"
           />
           <input
             name="lastName"
@@ -157,6 +163,7 @@ export default function Users() {
             placeholder="Last Name"
             onChange={handleChange}
             required
+            className="p-2 border rounded w-full sm:w-40"
           />
           <input
             name="email"
@@ -165,6 +172,7 @@ export default function Users() {
             placeholder="Email Address"
             onChange={handleChange}
             required
+            className="p-2 border rounded w-full sm:w-52"
           />
           <input
             name="password"
@@ -173,17 +181,20 @@ export default function Users() {
             placeholder="New Password"
             onChange={handleChange}
             required
+            className="p-2 border rounded w-full sm:w-52"
           />
           <select
             name="role"
             value={form.role}
             required
             onChange={handleChange}
+            className="p-2 border rounded w-full sm:w-36"
           >
             <option value="">--Select Role--</option>
             <option value="user">User</option>
             <option value="admin">Admin</option>
           </select>
+
           {/* <input
             name="role"
             value={form.role}
@@ -194,38 +205,54 @@ export default function Users() {
 
           {editId ? (
             <>
-              <button onClick={handleUpdate}>Update</button>
-              <button onClick={handleCancel}>Cancel</button>
+              <button onClick={handleUpdate} className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700">
+                Update
+              </button>
+              <button onClick={handleCancel} className="bg-gray-400 text-white px-4 py-1 rounded hover:bg-gray-500">
+                Cancel
+              </button>
             </>
           ) : (
-            <button onClick={handleAdd}>Add</button>
+            <button onClick={handleAdd} className="bg-indigo-600 text-white px-4 py-1 rounded hover:bg-indigo-700">
+              Add
+            </button>
           )}
         </form>
       </div>
-      <div>
-        <input type="text" onChange={(e) => setSearchVal(e.target.value)} />
-        <button onClick={() => fetchUsers()}>Search</button>
+      <div className="mb-4">
+        <input
+          type="text"
+          onChange={(e) => setSearchVal(e.target.value)}
+          placeholder="Search..."
+          className="p-2 border rounded mr-2"
+        />
+        <button onClick={() => fetchUsers()} className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600">
+          Search
+        </button>
       </div>
-      <div>
-        <table border="1">
-          <thead>
+      <div className="overflow-x-auto">
+        <table className="min-w-full border border-gray-300">
+          <thead className="bg-gray-100">
             <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email Address</th>
-              <th>Role</th>
+              <th className="px-3 py-2 border">First Name</th>
+              <th className="px-3 py-2 border">Last Name</th>
+              <th className="px-3 py-2 border">Email Address</th>
+              <th className="px-3 py-2 border">Role</th>
+              <th className="px-3 py-2 border">Actions</th>
             </tr>
           </thead>
           {users.map((value) => (
             <tbody key={value._id}>
-              <tr>
-                <td>{value.firstName}</td>
-                <td>{value.lastName}</td>
-                <td>{value.email}</td>
-                <td>{value.role}</td>
-                <td>
-                  <button onClick={() => handleEdit(value)}>Edit</button>
-                  <button onClick={() => handleDelete(value._id)}>
+              <tr className="text-center">
+                <td className="px-3 py-2 border">{value.firstName}</td>
+                <td className="px-3 py-2 border">{value.lastName}</td>
+                <td className="px-3 py-2 border">{value.email}</td>
+                <td className="px-3 py-2 border">{value.role}</td>
+                <td className="px-3 py-2 border space-x-2">
+                  <button onClick={() => handleEdit(value)} className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
+                    Edit
+                  </button>
+                  <button onClick={() => handleDelete(value._id)} className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
                     Delete
                   </button>
                 </td>
@@ -234,14 +261,21 @@ export default function Users() {
           ))}
         </table>
       </div>
-      <div>
-        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
+      <div className="mt-4 flex items-center gap-4">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+          className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+        >
           Previous
         </button>
-        Page {page} of {totalPages}
+        <span>
+          Page <strong>{page}</strong> of <strong>{totalPages}</strong>
+        </span>
         <button
           disabled={page === totalPages}
           onClick={() => setPage(page + 1)}
+          className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
         >
           Next
         </button>
